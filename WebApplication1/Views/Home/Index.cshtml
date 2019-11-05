@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    @model Exercise
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Model.Name</h1>
+    <h2 id="timer">@Model.Time</h2>
+    <img src="@Model.Url" alt="Test">
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <div class="text-left">
+                <button id="start" type="button" class="btn btn-primary" onclick="start()">Start</button>
+                <form asp-controller="Home" asp-action="Index" asp-route-id="@Model.Id" method="get">
+                    <button id="next" type="submit" class="btn btn-primary" disabled>Next</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="text-right">
+                <button id="stop" type="button" class="btn btn-primary" >Stop</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var startTime = @Model.Time;
+
+    var start = () => {
+        var id = setInterval(() => {
+                if (startTime >= 0)
+                    $('#timer').text(startTime--);
+                else {
+                    //Finish
+                    clearInterval(id);
+                    $("#stop").prop('disabled', false);
+                    $("#next").prop('disabled', false);
+                }
+            },
+            1000);
+        $("#start").prop('disabled', true);
+        $("#stop").prop('disabled', true);
+    };
+
+</script>
