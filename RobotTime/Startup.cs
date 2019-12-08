@@ -19,11 +19,19 @@ namespace WebApplication1
             Configuration = configuration;
         }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                    builder => { builder.AllowAnyOrigin(); });
+            });
+
             services.AddControllersWithViews();
             services.AddDbContext<MyContext>(options => options.UseSqlServer(@"Server=tcp:robottimedbserver.database.windows.net,1433;Initial Catalog=RobotTime_db;Persist Security Info=False;User ID=klokkenman1;Password=tLB5F5!$E8sPeNtIH^gL;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
         }
@@ -47,12 +55,12 @@ namespace WebApplication1
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Default}/{action=Index}/{id?}");
             });
         }
     }
